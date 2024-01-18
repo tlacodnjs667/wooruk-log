@@ -1,6 +1,8 @@
 package org.itwill.springboot4.web;
 
+import java.security.Key;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +30,10 @@ public class CommentRestController {
     private final CommentService commentService;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable Long postId,
+    public ResponseEntity<Map<String, Object>> getCommentsByPost(@PathVariable Long postId,
         @RequestParam(defaultValue = "0") Integer curPage) {
         log.info("postId={}, curPage={}", postId, curPage);
-        List<Comment> result = commentService.getCommentsByPost(postId, curPage);
-        result.forEach(el -> log.info("el={}", el.getPost()));
+        Map<String, Object> result = commentService.getCommentsByPost(postId, curPage);
         return ResponseEntity.ok(result);
     }
 

@@ -1,5 +1,6 @@
 package org.itwill.springboot4.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,7 @@ public class Post extends BaseTimeEntity{
     private String author;
 
     @OneToMany(fetch = FetchType.LAZY) @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name = "POST_ID")
     private List<Comment> comments;
 
