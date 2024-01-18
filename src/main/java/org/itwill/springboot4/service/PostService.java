@@ -5,6 +5,7 @@ import org.itwill.springboot4.domain.Post;
 import org.itwill.springboot4.dto.PostCreateRequestDto;
 import org.itwill.springboot4.dto.PostModifyDto;
 import org.itwill.springboot4.dto.PostSearchRequestDto;
+import org.itwill.springboot4.repository.PostQuerydsl;
 import org.itwill.springboot4.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ public class PostService {
 
     @Autowired
     private PostRepository postDao;
+    private PostQuerydsl postQuerydsl;
 
     public Post createPost(PostCreateRequestDto entity) {
         Post post = entity.toPost();

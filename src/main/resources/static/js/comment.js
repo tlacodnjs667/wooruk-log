@@ -8,12 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const postId = document.getElementById("postIdInput").value;
   // 댓글 개수 div
   const commentCountEl = document.querySelector("#comment-count");
+  axios.get(
+      `/api/comments/${postId}?curPage=${curPage ?? 0}`).then(res => {
+        commentCountEl.innerHTML = res.data.totalComments;
+  });
+
+
   window.addEventListener("scroll", () => {
 
-    if (curPage >= totalPage) {
+    if (curPage >= totalPage || !curPage) {
       return;
     }
 
+    console.log("스크롤 이벤트");
     const scrollHeight = document.documentElement.scrollHeight;
     const scrollTop = document.documentElement.scrollTop;
     const clientHeight = document.documentElement.clientHeight;
@@ -43,7 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = commentItem.querySelector(".content");
 
     ctextToModify.value = content.value;
-    document.querySelector("#ctext-to-modify-length").innerHTML = content.value.length;
+    document.querySelector(
+        "#ctext-to-modify-length").innerHTML = content.value.length;
 
     document.getElementById("commentId").value = cmtId;
     handleResizeHeight(ctextToModify);
@@ -53,11 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetCmtDiv() {
     curPage = 0;
     commentBox.innerHTML = "";
+
     loadComment();
   }
 
   async function registerComment() {
-
+    console.log("댓글 등록 이벤트")
     if (text.length == 0) {
       alert("내용을 입력해주세요.");
       return;
@@ -72,7 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = {postId, text: text.value, writer: "익명이"};
 
     if (!text.value || !postId) {
-      alert("댓글 내용을 입력하세요!")
+      alert("댓글 내용을 입력하세요!");
+      return;
     }
 
     try {
@@ -82,12 +92,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.status === 200) {
         resetCmtDiv();
-        checkCmtValueLen();
+        checkCmtValueLen({target: text});
 
         commentCountEl.innerHTML = (parseInt(commentCountEl.innerHTML.trim()))
             + 1;
       } else {
-        alert("댓글 생성에 실패했습니다.")
+        alert("댓글 생성에 실패했습니다.");
       }
 
     } catch (err) {
@@ -97,22 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadComment() {
-
-    if (curPage >= totalPage) {
-      return;
-    }
-
     let commentHtml = "";
 
     const {data} = await axios.get(
         `/api/comments/${postId}?curPage=${curPage ?? 0}`);
 
-    curPage = data.curPage + 1;
-
     const {totalComments} = data;
     commentCountEl.innerHTML = totalComments;
 
-    if (!data.curPage && (!data.list || !data.list.length)) {
+    if (!curPage && !totalComments) {
       commentHtml = `
       <div class="card-body py-5">
         <div class="row fw-semibold text-center"
@@ -124,7 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     </div>`;
-    } else {
+    } else if (curPage >= totalPage) {
+      return;
+    } else if (data.totalComments > 0) {
       commentHtml = data.list.map(el => {
         const {id: commentId, text, writer, createdTime} = el;
 
@@ -145,7 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
       `
       }).join("\n");
 
+      curPage = data.curPage + 1;
     }
+
     commentBox.innerHTML += commentHtml;
 
     await document.querySelectorAll(".update-cmt-btn").forEach(
