@@ -34,16 +34,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateBtnInModal = document.querySelector("#update-btn");
   const ctextToModify = document.querySelector("#ctext-to-modify");
 
+  ctextToModify.addEventListener("keyup", checkCmtValueLen);
+
   function clickUpdateCmt(e) {
     const cmtId = e.target.getAttribute("cmt-id");
-    // console.log(cmtId);
 
     const commentItem = document.querySelector(`#comment-item-${cmtId}`);
     const content = commentItem.querySelector(".content");
 
     ctextToModify.value = content.value;
+    document.querySelector("#ctext-to-modify-length").innerHTML = content.value.length;
+
     document.getElementById("commentId").value = cmtId;
     handleResizeHeight(ctextToModify);
+
   }
 
   function resetCmtDiv() {
@@ -87,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
     } catch (err) {
-      // console.error(err);
+      console.error(err);
     }
 
   }
@@ -157,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await document.querySelectorAll("textarea").forEach(el => {
       handleResizeHeight(el);
-      // console.log(el)
     });
   }
 
@@ -166,16 +169,16 @@ document.addEventListener("DOMContentLoaded", () => {
       el => el.addEventListener("keyup", handleResizeHeightByEvent)
   )
 
-  function checkCmtValueLen() {
-    let cmtInputLen = text.value.length;
+  function checkCmtValueLen(e) {
+    let cmtInputLen = e.target.value.length;
 
     if (cmtInputLen >= 1000) {
-      text.value = text.value.slice(0, 1000);
+      e.target.value = e.target.value.slice(0, 1000);
       cmtInputLen = 1000;
     }
 
     document.querySelector(
-        "#comment-length-span").innerHTML = cmtInputLen;
+        `#${e.target.id}-length`).innerHTML = cmtInputLen;
   }
 
   function handleResizeHeightByEvent(e) {
@@ -216,8 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (status != 200) {
       alert("댓글 수정에 실패하였습니다. 다시 시도해주세요..")
     }
-
-    // console.log("댓글 수정 결과 : " + status);
 
     myModal.hide();
     const commentItem = document.querySelector(`#comment-item-${commentId}`);
