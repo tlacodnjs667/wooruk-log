@@ -1,0 +1,14 @@
+package org.itwill.springboot4;
+
+import org.itwill.springboot4.util.FileUploader;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public FileUploader fileUploader() {
+        return new FileUploader();
+    }
+}
