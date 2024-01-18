@@ -1,15 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
   let firstClickShowCmt = true;
-  let commentPage = 0;
+  let curPage, totalPage;
 
   // 댓글 리스트
-  const commentBox = document.querySelector("#comment-box");
+  const commentBox = document.querySelector("div#comment-box");
 
   const postId = document.getElementById("postIdInput").value;
   // 댓글 개수 div
   const commentCountEl = document.querySelector("#comment-count");
-
   window.addEventListener("scroll", () => {
+
+    if (curPage >= totalPage) {
+      return;
+    }
+
     const scrollHeight = document.documentElement.scrollHeight;
     const scrollTop = document.documentElement.scrollTop;
     const clientHeight = document.documentElement.clientHeight;
@@ -47,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetCmtDiv() {
-    commentPage = 0;
+    curPage = 0;
     commentBox.innerHTML = "";
     loadComment();
   }
@@ -93,13 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadComment() {
-    const commentCnt = commentCountEl.innerHTML;
+
+    if (curPage >= totalPage) {
+      return;
+    }
+
     let commentHtml = "";
 
     const {data} = await axios.get(
-        `/api/comments/${postId}?curPage=${commentPage}`);
+        `/api/comments/${postId}?curPage=${curPage ?? 0}`);
 
-    if (!commentPage && (!data || data.length === 0)) {
+    curPage = data.curPage + 1;
+
+    const {totalComments} = data;
+    commentCountEl.innerHTML = totalComments;
+
+    if (!data.curPage && (!data.list || !data.list.length)) {
       commentHtml = `
       <div class="card-body py-5">
         <div class="row fw-semibold text-center"
@@ -111,9 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     </div>`;
-    }
-    else {
-      commentHtml = data.map(el => {
+    } else {
+      commentHtml = data.list.map(el => {
         const {id: commentId, text, writer, createdTime} = el;
 
         return `<div id=${"comment-item-"
@@ -132,9 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       `
       }).join("\n");
+
     }
     commentBox.innerHTML += commentHtml;
-    commentPage++;
 
     await document.querySelectorAll(".update-cmt-btn").forEach(
         el => {
