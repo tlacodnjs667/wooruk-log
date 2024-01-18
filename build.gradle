@@ -17,6 +17,7 @@ configurations {
     }
 }
 
+
 repositories {
     mavenCentral()
 }
@@ -40,6 +41,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+//    gradle build task 에러를 해결하기 위해서 :
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
 //    Querydsl -------
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
@@ -50,4 +55,21 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+
+// Querydsl 관련 빌드 옵션
+
+def querydslDir = "$buildDir/generated/qeurydsl";
+
+sourceSets {
+    main.java.srcDirs += [querydslDir];
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
 }
