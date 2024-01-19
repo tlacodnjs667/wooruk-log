@@ -1,4 +1,4 @@
-package org.itwill.springboot4;
+package org.itwill.springboot4.config;
 
 import org.itwill.springboot4.util.FileUploader;
 import org.springframework.context.annotation.Bean;
