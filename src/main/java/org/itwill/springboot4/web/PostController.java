@@ -9,6 +9,7 @@ import org.itwill.springboot4.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +30,12 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("/create")
+    @PreAuthorize("hasRole('USER')")
     public void getPostPage() {
     }
 
     @GetMapping("/modify/{postId}")
+    @PreAuthorize("hasRole('USER')")
     public String getPostModifyPage(@PathVariable Long postId, Model model) {
         Post post = postService.getPostDetail(postId);
 
@@ -43,6 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/delete/{postId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public String deletePost(@PathVariable Long postId) {
 
         postService.deletePost(postId);
@@ -71,6 +75,7 @@ public class PostController {
 
     @ResponseBody
     @PostMapping("/create")
+    @PreAuthorize("hasRole('USER')") // @PreAuthorize("authenticated()")
     public ResponseEntity<Long> createPost(@RequestBody PostCreateRequestDto entity) {
         log.info("들어온 post={}", entity);
 
@@ -80,6 +85,7 @@ public class PostController {
 
     @ResponseBody
     @PostMapping("/modify")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> modifyPost(@RequestBody PostModifyDto entity) {
         log.info("post={}", entity);
         Post post = postService.modifyPost(entity);

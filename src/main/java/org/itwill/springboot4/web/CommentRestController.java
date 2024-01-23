@@ -11,6 +11,7 @@ import org.itwill.springboot4.dto.CommentCreateRequestDto;
 import org.itwill.springboot4.dto.CommentUpdateRequestDto;
 import org.itwill.springboot4.service.CommentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class CommentRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> createCommentByPost(@RequestBody CommentCreateRequestDto dto) {
 
         log.info("dto={}", dto);
@@ -47,6 +49,7 @@ public class CommentRestController {
 
 
     @PutMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Boolean> updateComment(@RequestBody CommentUpdateRequestDto dto) {
 
         boolean result = commentService.updateComment(dto);
@@ -54,6 +57,7 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/{cmtId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Object> deleteComment (@PathVariable Long cmtId) {
         commentService.deleteComment(cmtId);
 

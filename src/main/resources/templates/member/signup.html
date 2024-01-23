@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<header th:replace="~{/layout/fragment::my-header}"></header>
+<body class="container-fluid">
+
+<div th:insert="~{/layout/fragment::header('join page')}"></div>
+
+<main class="card card-body my-4">
+  <div th:if="${param.error}" class="alert alert-danger" role="alert">
+    중복된 아이디가 있습니다. 새로운 아이디를 입력해주세요!
+  </div>
+  <form method="post">
+    <div class="form-floating my-2">
+      <input class="form-control" placeholder="아이디 입력"
+             name="username" id="usernameInput" type="text"
+             required autofocus/>
+      <label class="card-desc" for="usernameInput"> username </label>
+    </div>
+    <div class="form-floating my-2">
+      <input class="form-control" placeholder="비밀번호 입력" required
+             type="password" name="password" id="passwordInput"/>
+      <label for="passwordInput" class=""> password </label>
+    </div>
+    <div class="form-floating my-2">
+      <input class="form-control" placeholder="비밀번호 확인" required
+             type="password" id="passwordCheckInput"/>
+      <label for="passwordCheckInput"> password check </label>
+    </div>
+    <div class="form-floating my-2">
+      <input class="form-control" placeholder="이메일 입력" required
+             name="email" type="email" id="emailInput"/>
+      <label for="emailInput" class=""> email </label>
+    </div>
+
+    <div class="my-3">
+      <input type="submit" id="complete-btn" class="form-control btn btn-success" value="회원가입 완료"/>
+    </div>
+  </form>
+  <div class="my-2">
+    <div class="my-2">이미 계정이 있으신가요?</div>
+    <a class="form-control btn btn-primary" th:href="@{/member/login}">로그인</a>
+  </div>
+</main>
+
+<script th:replace="~{/layout/fragment::bootstrap_js}"></script>
+<script src="../js/signup.js"></script>
+</body>
+</html>

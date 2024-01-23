@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   let firstClickShowCmt = true;
   let curPage, totalPage;
+  let curUser = document.querySelector("input#curUser").value;
 
   // 댓글 리스트
   const commentBox = document.querySelector("div#comment-box");
@@ -78,7 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     //   Ajax 요청에 포함시켜서 보낼 데이터
-    const data = {postId, text: text.value, writer: "익명이"};
+    const data = {
+      postId,
+      text: text.value,
+      writer : curUser
+    };
 
     if (!text.value || !postId) {
       alert("댓글 내용을 입력하세요!");
@@ -140,10 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="writer">${writer}</div>
                 <div class="text-secondary">${createdTime}</div>
               </div>
-               <div class="d-flex justify-content-between mb-3" style="width: 100px">
+               <div class="d-flex justify-content-between mb-3${writer===curUser?'' : ' d-none'}" style="width: 100px">
                   <button class="update-cmt-btn btn btn-sm"  cmt-id=${commentId} data-bs-toggle="modal" data-bs-target="#staticBackdrop">수정</button>  
                   <button class="delete-cmt-btn btn btn-sm" cmt-id=${commentId}>삭제</button>  
-             </div>
+               </div>
           </div>
           <textarea class="mt-4 mb-3 content form-control-plaintext" rows=1 style="height: auto" readonly>${text}</textarea>
       </div>
