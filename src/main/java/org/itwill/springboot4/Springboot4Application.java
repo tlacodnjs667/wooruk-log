@@ -3,6 +3,7 @@ package org.itwill.springboot4;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /*
     insert, update 쿼리를 실행할 때 시간을 자동으로

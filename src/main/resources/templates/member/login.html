@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<header th:replace="~{/layout/fragment::my-header}"></header>
+<body class="container-fluid">
+
+<div th:insert="~{/layout/fragment::header('Login page')}"></div>
+
+<main class="card card-body my-4">
+  <div th:if="${param.error}" class="alert alert-danger" role="alert">
+    로그인에 실패했습니다. 아이디 비밀번호를 확인해주세요!
+  </div>
+  <form method="post">
+    <div class="my-2">
+      <label class="card-desc" for="usernameInput"> 아이디 : </label>
+      <input class="form-control" placeholder="아이디 입력"
+             name="username" id="usernameInput" type="text"
+             required autofocus/>
+    </div>
+    <div class="my-2">
+      <label for="passwordInput"> 비밀번호 : </label>
+      <input class="form-control" placeholder="비밀번호 입력" required
+             name="password" type="password" id="passwordInput"/>
+    </div>
+
+    <div class="my-2">
+      <input type="submit" class="form-control btn btn-success" value="로그인"/>
+    </div>
+  </form>
+  <div class="my-2">
+    <a class="form-control btn btn-primary" th:url="@{/member/signup}">회원가입</a>
+  </div>
+</main>
+
+<script th:replace="~{/layout/fragment::bootstrap_js}"></script>
+
+</body>
+</html>
